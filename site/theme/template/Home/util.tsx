@@ -13,3 +13,23 @@ export function preLoad(list: string[]) {
     });
   }
 }
+
+let siteData: any = null;
+let siteDataPromise: Promise<any> = null!;
+export function getSiteData(keys: Array<string | number> = []): any {
+  if (!siteDataPromise) {
+    siteDataPromise = fetch('http://my-json-server.typicode.com/ant-design/website-data/db')
+      .then(res => res.json())
+      .then((data: any) => {
+        siteData = data;
+      });
+  }
+
+  if (!siteData) {
+    throw siteDataPromise;
+  }
+
+  return keys.reduce((data, key) => {
+    return data[key];
+  }, siteData);
+}
